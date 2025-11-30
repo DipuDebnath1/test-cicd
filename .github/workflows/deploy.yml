@@ -1,4 +1,24 @@
 
+# name: First Workflow
+
+# on: push
+
+# jobs:
+#   my-first-jobs:
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - name: Coping code
+#         uses: actions/checkout@v6
+
+#       - name: name node-js
+#         uses: actions/checkout@v6
+#         with:
+#           node-version: 20.19.5
+#       - name: check node version
+#         run: node -v
+
+
 name: First Workflow
 
 on: push
@@ -9,11 +29,12 @@ jobs:
 
     steps:
       - name: Coping code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
-      - name: name node-js
-        uses: actions/checkout@v6
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 20.19.5
+
       - name: check node version
         run: node -v
