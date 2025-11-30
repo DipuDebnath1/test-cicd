@@ -1,20 +1,4 @@
 
-
-# name: First Workflow
-
-# on: push 
-
-# jobs:
-#   my-first-jobs:
-#     runs-on: ubuntu-latest
-
-#     steps:
-#         - name: Print Message
-#           run: echo "Hello github action"
-        
-#         - name: Check Linting
-#           run: echo "check linting"
-
 name: First Workflow
 
 on: push
@@ -24,9 +8,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Print Message
-        run: echo "Hello github action test from deploy.yml"
-
-      - name: Check Linting
-        run: echo "check linting"
- 
+      - name: Print Work Directory
+        run: |
+          pwd
+          ls -a 
+          echo $GITHUB_WORKSPACE
