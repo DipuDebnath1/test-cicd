@@ -63,6 +63,7 @@ const GetSelfProfile: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
     const { user }: any = req;
     const { _id } = user;
+    console.log(user);
 
     const data = await UserService.findById(_id);
 
