@@ -79,7 +79,7 @@ const GetSelfProfile: RequestHandler = catchAsync(
   },
 );
 
-// push in export
+// update code
 
 export const UserController = {
   FindSingleUser,
