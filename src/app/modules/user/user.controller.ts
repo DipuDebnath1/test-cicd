@@ -62,8 +62,7 @@ const UpdateUserProfile: RequestHandler = catchAsync(
 const GetSelfProfile: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
     const { user }: any = req;
-    const { _id } = user;
-    console.log(user);
+    const { _id } = user; 
 
     const data = await UserService.findById(_id);
 

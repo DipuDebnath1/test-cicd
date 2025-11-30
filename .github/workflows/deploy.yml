@@ -4,14 +4,14 @@ name: First Workflow
 on: push
 
 jobs:
-  my-first-jobs:
+  test-code:
     runs-on: ubuntu-latest
 
     steps:
       - name: Coping code
         uses: actions/checkout@v6
 
-      - name: name node-js
+      - name: install node-js
         uses: actions/setup-node@v6
         with:
           node-version: 24.11.1
@@ -26,3 +26,17 @@ jobs:
         run: npm run lint
 
 
+  build-code:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: install node-js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24.11.1
+
+      - name: Coping code
+        uses: actions/checkout@v6
+
+      - name: build project
+        run: npm run build
