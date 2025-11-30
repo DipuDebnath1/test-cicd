@@ -25,7 +25,7 @@ jobs:
 
     steps:
       - name: Print Message
-        run: echo "Hello github"
+        run: echo "Hello github action test from deploy.yml"
 
       - name: Check Linting
         run: echo "check linting"
