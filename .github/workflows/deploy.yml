@@ -8,7 +8,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Print Work Directory
-        run: |
-          node -v
-          git --version
+      - name: Coping code
+        uses: actions/checkout@v6
+
+      - name: name node-js
+        uses: actions/checkout@v6
+        with:
+          node-version: 24.11.1
+      - name: check node version
+        run: node -v
