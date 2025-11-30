@@ -64,6 +64,8 @@ const GetSelfProfile: RequestHandler = catchAsync(
     const { user }: any = req;
     const { _id } = user; 
 
+    throw new AppError(httpStatus.BAD_REQUEST, 'User ID is required');
+
     const data = await UserService.findById(_id);
 
     if (!data) {
