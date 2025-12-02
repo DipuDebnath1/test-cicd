@@ -16,7 +16,7 @@ async function main() {
 
   try {
     // Connect to MongoDB
-    await mongoose.connect(config.databaseUri);
+    await mongoose.connect(/*config.databaseUri*/ 'mongodb://localhost:27017/test');
     logger.info('Database connected successfully');
 
     // Start Express server
