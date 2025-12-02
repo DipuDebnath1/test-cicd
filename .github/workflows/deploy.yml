@@ -1,36 +1,19 @@
 
 name: First Workflow
 
-on: push
+on: 
+  push:
+    branches:
+      - 'main'
+      - 'releases/**'
+ 
+ #dfgfdgdf
 
 jobs:
-  test-code:
-    runs-on: ubuntu-latest
 
-    steps:
-      - name: Coping code
-        uses: actions/checkout@v6
-
-      - name: install node-js
-        uses: actions/setup-node@v6
-        with:
-          node-version: 24.11.1
-
-      - name: check node version
-        run: node -v
-
-      - name: install dependencies
-        run: npm install
-        
-      - name : run tests
-        run: npm run lint
-
-
+  # Build Job
   build-code:
     runs-on: ubuntu-latest
-
-    needs: test-code
-
     steps:
       - name: install node-js
         uses: actions/setup-node@v6
@@ -45,3 +28,79 @@ jobs:
 
       - name: build project
         run: npm run build
+
+
+ # Deploy Job
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build-code
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install Node Js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24.11.1
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build App
+        run: npm run build
+
+      - name: Configure SSH
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+      - name: Deploy to EC2
+        env:
+          EC2_USER: ${{ secrets.EC2_USER }}
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+        run: |
+          # Create deployment directory
+          ssh -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST "mkdir -p ~/app"
+
+          # Copy files to EC2 instance
+          rsync -avz --exclude='.git' --exclude='node_modules' --exclude='.github' . $EC2_USER@$EC2_HOST:~/app/
+
+          # Install production dependencies on EC2
+          ssh -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST "cd ~/app && npm install"
+
+          # Stop existing PM2 process if it exists
+          ssh -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST "pm2 delete nodejs-app || true"
+
+          # Start the application with PM2
+          ssh -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST "cd ~/app && pm2 start dist/server.js --name nodejs-app"
+
+      # - name: Deploy to EC2
+      #   env:
+      #     EC2_USER: ${{ secrets.EC2_USER }}
+      #     EC2_HOST: ${{ secrets.EC2_HOST }}
+      #   run: |
+      #     # Create deployment directory
+      #     ssh $EC2_USER@$EC2_HOST "mkdir -p ~/app"
+
+      #     # Copy files to EC2 instance
+      #     rsync -avz \
+      #       --exclude='.git' \
+      #       --exclude='node_modules' \
+      #       --exclude='.github' \
+      #       . $EC2_USER@$EC2_HOST:~/app/
+
+      #     # Install production dependencies on EC2
+      #     ssh $EC2_USER@$EC2_HOST "cd ~/app && export PATH=$PATH:/run/user/
+      #     1000/fnm_multishells/112424_1734077954807/bin && npm install"
+
+      #     # Stop existing PM2 process if it exists
+      #     ssh $EC2_USER@$EC2_HOST "export PATH=$PATH:/run/user/1000/
+      #     fnm_multishells/112424_1734077954807/bin && pm2 delete
+      #     nodejs-app || true"
+
+      #     # Start the application with PM2
+      #     ssh $EC2_USER@$EC2_HOST "export PATH=$PATH:/run/user/1000/
+      #     fnm_multishells/112424_1734077954807/bin && cd ~/app && pm2
+      #     start dist/server.js --name nodejs-app"
