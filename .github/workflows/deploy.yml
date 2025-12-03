@@ -7,7 +7,6 @@ on:
       - 'main'
       - 'releases/**'
  
- #dfgfdgdf
 
 jobs:
 
